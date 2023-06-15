@@ -5,9 +5,11 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +32,7 @@ public class CategoryController {
 		return response;
 	}
 	
-	@GetMapping("/category/{id}")
+	@GetMapping("/categories/{id}")
 	public ResponseEntity<CategoryResponseRest> searchCategory(@PathVariable("id") Long id){
 		ResponseEntity<CategoryResponseRest> response = categoryResponseService.searchById(id);
 		return response;
@@ -42,5 +44,16 @@ public class CategoryController {
 		return response;
 	}
 
+	@PutMapping("/categories/{id}")
+	public ResponseEntity<CategoryResponseRest> update(@Valid @RequestBody Category category, @PathVariable("id") Long id){
+		ResponseEntity<CategoryResponseRest> response = categoryResponseService.update(category,id);
+		return response;
+	}
+	
+	@DeleteMapping("/categories/{id}")
+	public ResponseEntity<CategoryResponseRest> deleteCategory(@PathVariable("id") Long id){
+		ResponseEntity<CategoryResponseRest> response = categoryResponseService.deleteById(id);
+		return response;
+	}
 
 }

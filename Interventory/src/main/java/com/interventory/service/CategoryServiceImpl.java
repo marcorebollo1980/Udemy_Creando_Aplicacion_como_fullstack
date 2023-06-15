@@ -89,4 +89,57 @@ public class CategoryServiceImpl implements ICategoryService{
 		return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK) ;
 	}
 
+	@Override
+	public ResponseEntity<CategoryResponseRest> update(Category category, Long id) {
+
+		CategoryResponseRest response = new CategoryResponseRest();
+		List<Category> listCategory = new ArrayList<>();
+
+		try {
+			Optional<Category> categoryId = iCategoryDao.findById(id);
+			if (categoryId.isPresent()) {
+				categoryId.get().setName(category.getName());
+				categoryId.get().setDescription(category.getDescription());
+
+				Category categoryUpdate = iCategoryDao.save(categoryId.get());
+				if (categoryUpdate != null) {
+					listCategory.add(categoryUpdate);
+					response.getCategoryResponse().setCategory(listCategory);
+					response.setMetadata("Respuesta Exitosa", "00", "Categoria actualizada de forma exitosa");
+				} else {
+					response.setMetadata("Respuesta Erronea", "-1", "Categoria no actualizada");
+					return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.BAD_REQUEST);
+				}
+
+			} else {
+				response.setMetadata("Respuesta Erronea", "-1", "Categoria no encontrada");
+				return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.NOT_FOUND);
+			}
+
+		} catch (Exception e) {
+			response.setMetadata("Respuesta Erronea", "-1", "Error al actualizar la categoria");
+			e.getStackTrace();
+			return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK);
+	}
+
+	@Override
+	public ResponseEntity<CategoryResponseRest> deleteById(Long id) {
+		CategoryResponseRest response = new CategoryResponseRest();
+		try {
+			
+			iCategoryDao.deleteById(id);
+			response.setMetadata("Respuesta exitosa", "00", "Registro eliminado de forma exitosa");
+			
+		} catch (Exception e) {
+			response.setMetadata("Respuesta Erronea", "-1", "Categoria no guardada");
+			e.getStackTrace();
+			return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.BAD_REQUEST) ;
+		}
+		
+		return new ResponseEntity<CategoryResponseRest>(response, HttpStatus.OK) ;
+	}
+
 }
